@@ -1,12 +1,17 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
 class City(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     country = models.CharField(max_length=255)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
+    latitude = models.FloatField(
+        validators=[MinValueValidator(-90.0), MaxValueValidator(90.0)]
+    )
+    longitude = models.FloatField(
+        validators=[MinValueValidator(-180.0), MaxValueValidator(180.0)]
+    )
     external_id = models.CharField(max_length=255, blank=True, null=True, db_index=True)
 
     class Meta:
@@ -33,10 +38,16 @@ class WeatherData(models.Model):
     )
     temperature = models.FloatField()
     feels_like = models.FloatField()
-    humidity = models.PositiveSmallIntegerField()
-    pressure = models.PositiveSmallIntegerField()
-    wind_speed = models.FloatField()
-    wind_direction = models.PositiveSmallIntegerField()
+    humidity = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
+    pressure = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(800), MaxValueValidator(1200)]
+    )
+    wind_speed = models.FloatField(validators=[MinValueValidator(0.0)])
+    wind_direction = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(360)]
+    )
     weather_condition = models.CharField(max_length=255, db_index=True)
     weather_description = models.CharField(max_length=255)
     icon = models.CharField(max_length=255)

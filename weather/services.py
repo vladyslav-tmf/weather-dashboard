@@ -24,10 +24,6 @@ class WeatherService:
                 "Please set the OPEN_WEATHER_MAP_API_KEY environment variable."
             )
 
-    def get_temperature_unit(self) -> str:
-        """Get temperature unit based on the API units setting."""
-        return "°C" if self.units == "metric" else "°F"
-
     def get_weather_for_city(self, city: City) -> dict:
         """Get current weather data for a city from OpenWeatherMap API."""
         endpoint = f"{self.api_url}weather"

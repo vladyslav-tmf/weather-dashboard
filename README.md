@@ -2,6 +2,8 @@
 
 Real-time Weather Monitoring System - RESTful API service for tracking weather conditions in cities worldwide.
 
+![Weather Dashboard Demo](demo.png)
+
 ## 📋 Table of Contents
 - [Overview](#-overview)
 - [Features](#-features)

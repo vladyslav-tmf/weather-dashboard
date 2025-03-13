@@ -37,14 +37,14 @@ urlpatterns = [
     path("api/v1/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("api/v1/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("api/v1/token/verify/", TokenVerifyView.as_view(), name="token-verify"),
-    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("api/docs/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/schema/swagger/",
+        "api/docs/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/schema/redoc/",
+        "api/docs/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),

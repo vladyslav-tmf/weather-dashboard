@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -38,4 +39,5 @@ class WeatherData(models.Model):
         indexes = [models.Index(fields=["city", "timestamp"])]
 
     def __str__(self) -> str:
-        return f"{self.city.name}: {self.temperature}°C at {self.timestamp}"
+        unit = "°C" if settings.OPEN_WEATHER_MAP_API_UNITS == "metric" else "°F"
+        return f"{self.city.name}: {self.temperature}{unit} at {self.timestamp}"

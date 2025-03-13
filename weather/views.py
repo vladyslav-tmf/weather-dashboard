@@ -5,8 +5,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from weather.models import City, WeatherData
-from weather.serializers import CitySerializer, CityWithCurrentWeatherSerializer, \
-    WeatherDataSerializer
+from weather.serializers import (
+    CitySerializer,
+    CityWithCurrentWeatherSerializer,
+    WeatherDataSerializer,
+)
 
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):

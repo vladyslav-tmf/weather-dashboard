@@ -14,25 +14,6 @@ class CitySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "country", "latitude", "longitude", "external_id"]
 
 
-class CityWithCurrentWeatherSerializer(serializers.ModelSerializer):
-    """Serializer for City model with current weather data."""
-
-    current_weather = serializers.SerializerMethodField()
-
-    class Meta:
-        model = City
-        fields = ["id", "name", "country", "latitude", "longitude", "current_weather"]
-
-    def get_current_weather(self, city: City) -> dict | None:
-        """Get the latest weather data for a city."""
-        try:
-            latest_weather = city.weather_data.latest()
-            return WeatherDataSerializer(latest_weather).data
-
-        except WeatherData.DoesNotExist:
-            return None
-
-
 class WeatherDataSerializer(serializers.ModelSerializer):
     """
     Serializer for the WeatherData model.
@@ -58,3 +39,13 @@ class WeatherDataSerializer(serializers.ModelSerializer):
             "icon",
             "timestamp",
         ]
+
+
+class CityWithCurrentWeatherSerializer(serializers.ModelSerializer):
+    """Serializer for City model with current weather data."""
+
+    current_weather = WeatherDataSerializer()
+
+    class Meta:
+        model = City
+        fields = ["id", "name", "country", "latitude", "longitude", "current_weather"]

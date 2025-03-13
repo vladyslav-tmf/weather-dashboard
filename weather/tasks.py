@@ -1,7 +1,6 @@
 import logging
 
 from celery import shared_task
-from django.db import transaction
 from httpx import HTTPError
 
 from weather.models import City

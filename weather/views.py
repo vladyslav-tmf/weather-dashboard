@@ -1,4 +1,5 @@
 from django.db.models import QuerySet
+from django.views.generic import TemplateView
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -12,6 +13,15 @@ from weather.serializers import (
     WeatherDataSerializer,
 )
 from weather.services import WeatherService
+
+
+class DashboardView(TemplateView):
+    template_name = "weather/dashboard.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cities"] = City.objects.prefetch_related("weather_data")
+        return context
 
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):

@@ -23,7 +23,10 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+from weather.views import DashboardView
+
 urlpatterns = [
+    path("", DashboardView.as_view(), name="dashboard"),
     path("admin/", admin.site.urls),
     path("api/v1/", include("weather.urls")),
     path("api/v1/token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),

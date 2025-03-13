@@ -14,6 +14,15 @@ class City(models.Model):
         ordering = ["name"]
         indexes = [models.Index(fields=["name", "country"])]
 
+    @property
+    def current_weather(self) -> "WeatherData | None":
+        """Get the latest weather data for the city."""
+        try:
+            return self.weather_data.latest()
+
+        except WeatherData.DoesNotExist:
+            return None
+
     def __str__(self) -> str:
         return f"{self.name}, {self.country}"
 

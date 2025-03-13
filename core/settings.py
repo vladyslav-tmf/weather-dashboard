@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # Third-party apps
     "rest_framework",
     "django_filters",
+    "drf_spectacular",
     # Local apps
     "weather.apps.WeatherConfig",
 ]
@@ -149,6 +150,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # JWT settings
@@ -172,3 +174,18 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# Spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Weather Dashboard API",
+    "DESCRIPTION": "API for managing weather data for cities",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
+    "COMPONENT_SPLIT_REQUEST": True,
+    "SCHEMA_PATH_PREFIX": "/api/v1",
+}

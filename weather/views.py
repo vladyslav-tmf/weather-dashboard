@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
 from django.views.generic import TemplateView
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -26,6 +27,28 @@ class DashboardView(TemplateView):
         return context
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List cities",
+        description="Get a list of all cities with pagination.",
+    ),
+    retrieve=extend_schema(
+        summary="Get city details",
+        description="Get detailed information about a specific city.",
+    ),
+    with_current_weather=extend_schema(
+        summary="List cities with current weather",
+        description="Get a list of all cities with their current weather data.",
+        responses={status.HTTP_200_OK: CityWithCurrentWeatherSerializer(many=True)},
+    ),
+    update_weather=extend_schema(
+        summary="Update city weather",
+        description=(
+            "Update weather data for a specific city. Requires admin privileges."
+        ),
+        responses={status.HTTP_200_OK: WeatherDataSerializer},
+    ),
+)
 class CityViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for cities.
@@ -62,6 +85,24 @@ class CityViewSet(viewsets.ReadOnlyModelViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="List weather data",
+        description=(
+            "Get a list of all weather data entries "
+            "with pagination and filtering options."
+        ),
+    ),
+    retrieve=extend_schema(
+        summary="Get weather data details",
+        description="Get detailed information about specific weather data entry.",
+    ),
+    update_all=extend_schema(
+        summary="Update all cities weather",
+        description="Update weather data for all cities. Requires admin privileges.",
+        responses={status.HTTP_200_OK: WeatherDataSerializer(many=True)},
+    ),
+)
 class WeatherDataViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for weather data.

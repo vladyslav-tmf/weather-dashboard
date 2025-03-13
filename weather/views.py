@@ -1,6 +1,7 @@
 from django.db.models import QuerySet
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -10,6 +11,7 @@ from weather.serializers import (
     CityWithCurrentWeatherSerializer,
     WeatherDataSerializer,
 )
+from weather.services import WeatherService
 
 
 class CityViewSet(viewsets.ReadOnlyModelViewSet):
@@ -29,6 +31,23 @@ class CityViewSet(viewsets.ReadOnlyModelViewSet):
         cities = self.get_queryset()
         serializer = CityWithCurrentWeatherSerializer(cities, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["post"], permission_classes=[IsAdminUser])
+    def update_weather(self, request: Request, pk: int = None):
+        """Update weather data for a specific city."""
+        city = self.get_object()
+
+        weather_service = WeatherService()
+        weather_data = weather_service.update_weather_for_city(city)
+
+        if weather_data:
+            serializer = WeatherDataSerializer(weather_data)
+            return Response(serializer.data)
+
+        return Response(
+            {"error": "Failed to update weather data"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 class WeatherDataViewSet(viewsets.ReadOnlyModelViewSet):
@@ -56,3 +75,18 @@ class WeatherDataViewSet(viewsets.ReadOnlyModelViewSet):
             queryset = queryset.filter(timestamp__lte=date_to)
 
         return queryset
+
+    @action(detail=False, methods=["post"], permission_classes=[IsAdminUser])
+    def update_all(self, request: Request) -> Response:
+        """Update weather data for all cities."""
+        weather_service = WeatherService()
+        results = weather_service.update_weather_for_all_cities()
+
+        if results:
+            serializer = WeatherDataSerializer(results, many=True)
+            return Response(serializer.data)
+
+        return Response(
+            {"error": "Failed to update weather data for any city"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )

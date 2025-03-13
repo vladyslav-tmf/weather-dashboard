@@ -16,6 +16,7 @@ httpx = "^0.28.1"
 celery = "^5.4.0"
 redis = "^5.2.1"
 psycopg2-binary = "^2.9.10"
+django-filter = "^25.1"
 
 
 [tool.poetry.group.dev.dependencies]

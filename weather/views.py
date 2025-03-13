@@ -1,11 +1,13 @@
 from django.db.models import QuerySet
 from django.views.generic import TemplateView
+from django_filters import rest_framework as filters
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from weather.filters import WeatherDataFilter
 from weather.models import City, WeatherData
 from weather.serializers import (
     CitySerializer,
@@ -66,25 +68,10 @@ class WeatherDataViewSet(viewsets.ReadOnlyModelViewSet):
     Provides read-only access to weather information with filtering.
     """
 
+    queryset = WeatherData.objects.select_related("city")
     serializer_class = WeatherDataSerializer
-
-    def get_queryset(self) -> QuerySet[WeatherData]:
-        queryset = WeatherData.objects.select_related("city")
-
-        city_id = self.request.query_params.get("city")
-        date_from = self.request.query_params.get("from")
-        date_to = self.request.query_params.get("to")
-
-        if city_id:
-            queryset = queryset.filter(city_id=city_id)
-
-        if date_from:
-            queryset = queryset.filter(timestamp__gte=date_from)
-
-        if date_to:
-            queryset = queryset.filter(timestamp__lte=date_to)
-
-        return queryset
+    filter_backends = [filters.DjangoFilterBackend]
+    filterset_class = WeatherDataFilter
 
     @action(detail=False, methods=["post"], permission_classes=[IsAdminUser])
     def update_all(self, request: Request) -> Response:

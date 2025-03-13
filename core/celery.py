@@ -13,6 +13,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "update-weather-data-hourly": {
         "task": "weather.tasks.schedule_weather_updates_for_all_cities",
-        "schedule": crontab(minute=0)
+        "schedule": crontab(minute=0),
     },
 }
